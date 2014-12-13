@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>ATT Enhanced WebRTC</title>
+    <meta name="description" content="Enhanced WebRTC Demo">
+    <meta name="author" content="ATT">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/app.css">
+    <style type="text/css">
+      body {
+        padding-top: 80px;
+      }
+    </style>
+    <link rel="stylesheet" href="https://js.arcgis.com/3.11/esri/css/esri.css">
+    <style>
+      html, body, #map {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background-color: #FFF;
+        font-family: "Trebuchet MS";
+		padding-top: 60px;
+      }
+    </style>
+    <script src="https://js.arcgis.com/3.11/"></script>
+    <script>
+	
+	esriMap = function () {
+		var map;
+
+      require(["esri/map", "esri/layers/FeatureLayer", "esri/InfoTemplate", "esri/graphic", "esri/symbols/PictureMarkerSymbol", "esri/renderers/UniqueValueRenderer", "dojo/domReady!"], function(Map , FeatureLayer, InfoTemplate, Graphic, PictureMarkerSymbol, UniqueValueRenderer, SimpleRenderer) {
+        map = new Map("map", {
+          basemap: "topo",
+          center: [-122.404, 37.798], // longitude, latitude
+          zoom: 25
+        });
+		map.on("load", initOperationalLayer );
+		
+		var pictureMarkerSymbol = new PictureMarkerSymbol('http://www.clipartbest.com/cliparts/RiA/6L4/RiA6L4o6T.png', 25.5, 25.5);
+		var pictureMarkerSymbol2 = new PictureMarkerSymbol('https://icons.iconarchive.com/icons/icons8/windows-8/512/City-Police-Badge-icon.png', 25.5, 25.5);
+		var pictureMarkerSymbol3 = new PictureMarkerSymbol('http://etc.usf.edu/presentations/extras/letters/varsity_letters/27/34/v-400.png', 25.5, 25.5);
+		
+        function initOperationalLayer() {
+			map.disablePan();
+          var infoTemplate = new InfoTemplate("RESPONDERS REQUIRED", "Problem: Fire");
+		  var infoTemplate2 = new InfoTemplate("RESPONDING", "${TITLE}");
+          var featureLayer = new FeatureLayer("https://services3.arcgis.com/d5aPbKsvuMcfSy0P/arcgis/rest/services/FirePin/FeatureServer/1",{
+            mode: FeatureLayer.MODE_ONDEMAND,
+            outFields: ["*"],
+			visible : true,
+            infoTemplate: infoTemplate
+          });
+          var featureLayer2 = new FeatureLayer("https://services3.arcgis.com/d5aPbKsvuMcfSy0P/arcgis/rest/services/FRVR/FeatureServer/1",{
+			
+            mode: FeatureLayer.MODE_ONDEMAND,
+            outFields: ["*"],
+            infoTemplate: infoTemplate2
+          });
+		  var renderer = new UniqueValueRenderer(pictureMarkerSymbol, "Title");
+		  renderer.addValue("Firefighter Fred", pictureMarkerSymbol);
+		  renderer.addValue("Police Pete", pictureMarkerSymbol2);
+		  renderer.addValue("Volunteer Victor", pictureMarkerSymbol3);
+          featureLayer2.setRenderer(renderer);
+          map.addLayer(featureLayer);
+          map.addLayer(featureLayer2);
+          map.infoWindow.resize(155,75);
+        }
+      });	
+	}
+      
+    </script>
+  </head>
+  <body>
+    <header id="app-header">
+      <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <ul class="nav navbar-nav col-sm-offset-1">
+              <li><a class="pointer" id='nav_home' onclick="switchView('home')">ATT Enhanced WebRTC</a></li>
+              <li><a href="tutorial/" target="_blank" class="pointer" id='nav_tutorial'>Tutorial</a></li>
+              <li><a href="api-docs/" target="_blank" class="pointer" id='nav_apidocs'>API Docs</a></li>
+              <li><a href="recipes/" target="_blank" class="pointer" id='nav_recipes'>Recipes</a></li>
+              <li><a class="pointer" id="nav_profile" onclick="switchView('profile');"><span id="profile" style="display: none">Guest</span></a></li>
+              <li><a class="pointer" id="nav_e911Id" onclick="showAddressView();"><span id="update_address" style="display: none">Update E911 Address</span></a></li>
+              <li><a class="pointer" id='nav_logout' onclick="logout();"><span id="logout" style="display: none">Logout</span></a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <section id="main" role="main" class="clearfix">
+      <div class="container"> 
+        <div id="message" class="alert alert-info clearfix"></div>
+          <div id="errormessage" class="alert alert-danger"></div>
+            <div id="view" class="clearfix">
+              <h3 class="text-center">&nbsp;&nbsp;&nbsp;Loading...&nbsp;&nbsp;&nbsp;</h3>
+            <br/>
+            <br/>
+          <br/>
+        </div>
+      </div>
+    </section>
+    <audio src="/assets/ringtone.mp3" loop id="ringtone"></audio>
+    <audio src="/assets/ringtone.mp3" loop id="calling-tone"></audio>
+    <script type="text/javascript" src="js/log.js"></script>
+	<script type="text/javascript" src="js/ewebrtc-sdk.min.js"></script> 
+	<script type="text/javascript" src="js/utils.js"></script>
+    <script type="text/javascript" src="js/sample.js"></script>
+    <script type="text/javascript" src="js/common.js"></script>
+  </body>
+</html>
