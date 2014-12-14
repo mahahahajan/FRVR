@@ -32,7 +32,7 @@
     <script>
 	
 	esriMap = function () {
-		var map;
+		var map, webrtReady = false;
 
       require(["esri/map", "esri/layers/FeatureLayer", "esri/InfoTemplate", "esri/graphic", "esri/symbols/PictureMarkerSymbol", "esri/renderers/UniqueValueRenderer", "dojo/domReady!"], function(Map , FeatureLayer, InfoTemplate, Graphic, PictureMarkerSymbol, UniqueValueRenderer, SimpleRenderer) {
         map = new Map("map", {
@@ -49,7 +49,7 @@
         function initOperationalLayer() {
 			map.disablePan();
           var infoTemplate = new InfoTemplate("RESPONDERS REQUIRED", "Problem: Fire");
-		  var infoTemplate2 = new InfoTemplate("RESPONDING", "${TITLE}");
+		  var infoTemplate2 = new InfoTemplate("RESPONDING", "${TITLE} ${DESCRIPTION} <br> <button onclick='callwebrtc()'>Call</button>");
           var featureLayer = new FeatureLayer("https://services3.arcgis.com/d5aPbKsvuMcfSy0P/arcgis/rest/services/FirePin/FeatureServer/1",{
             mode: FeatureLayer.MODE_ONDEMAND,
             outFields: ["*"],
@@ -71,7 +71,25 @@
           map.addLayer(featureLayer2);
           map.infoWindow.resize(155,75);
         }
-      });	
+      });
+	  
+	  /* $.ajax({
+		  type: "POST",
+		  url: '54.67.84.87:8080/com.atthackathon.frvr/rest/auth',
+		  data: {username: 'sliaw', password: 'password1' },
+		  success: function () {
+			webrtcReady = true;  
+		  }
+	  });*/
+	}
+	
+	function callwebrtc() {
+		phone.dial({
+			destination: '14029959704',
+			mediaType: 'audio',
+			localMedia: document.getElementById('localVideo'),
+			remoteMedia: document.getElementById('remoteVideo')
+		});
 	}
       
     </script>
@@ -108,6 +126,8 @@
     </section>
     <audio src="/assets/ringtone.mp3" loop id="ringtone"></audio>
     <audio src="/assets/ringtone.mp3" loop id="calling-tone"></audio>
+    
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script type="text/javascript" src="js/log.js"></script>
 	<script type="text/javascript" src="js/ewebrtc-sdk.min.js"></script> 
 	<script type="text/javascript" src="js/utils.js"></script>

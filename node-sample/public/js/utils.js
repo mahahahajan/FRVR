@@ -111,6 +111,7 @@ function setupHomeView() {
   });
   
   esriMap();
+  
 
   //document.getElementById('callee').value =  '@' + eWebRTCDomain;
 }
