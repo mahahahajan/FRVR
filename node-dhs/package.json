@@ -29,7 +29,7 @@
 	},
 	"dependencies": {
 		"bunyan": "1.0.0",
-		"restify": "2.8.2"
+		"restify": "8.5.1"
 	},
 	"dhs_config": {
 		"dhs_host": "localhost",
